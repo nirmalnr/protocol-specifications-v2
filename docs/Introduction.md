@@ -1,7 +1,8 @@
-# RFC-002: Beckn Architecture Design Philosophy and Principles
+# Beckn Architecture, Design Philosophy and Principles
+> Request for Comments
+## Document Details
 
-# 1. Document Details
-
+- **ID:** NFH-001
 - **Status:** Draft.
 - **Authors:** Ravi Prakash.
 - **Created:** 2026-03-03.
@@ -18,39 +19,40 @@
 - **Feedback - Pull Requests:** Click [here](https://github.com/beckn/protocol-specifications-v2/pulls?q=is%3Apr+label%3A%22RFC-002%22).
 - **Errata:** To be published.
 
-# 2. Abstract
+## Abstract
 
 This RFC defines the architectural philosophy and derived principles that guide Beckn Protocol v2 decisions, aligning transport contracts, asynchronous interaction patterns, catalog-first discovery, and contract-centric modeling with the canonical v2 artifacts and documentation.
 
-# 3. Table of Contents
+## Table of Contents
 
-- [RFC-002: Beckn Architecture Design Philosophy and Principles](#rfc-002-beckn-architecture-design-philosophy-and-principles)
-- [1. Document Details](#1-document-details)
-- [2. Abstract](#2-abstract)
-- [3. Table of Contents](#3-table-of-contents)
-- [4. Introduction](#4-introduction)
-- [5. Specification](#5-specification)
-  - [5.1 Design Principles](#51-design-principles)
-  - [5.2 Network Actors](#52-network-actors)
-  - [5.3 API Surface and Interaction Model](#53-api-surface-and-interaction-model)
-  - [5.4 Conformance Requirements and Alignment Notes](#54-conformance-requirements-and-alignment-notes)
-  - [5.5 Security, Migration, and Evolution Notes](#55-security-migration-and-evolution-notes)
-  - [5.6 Examples](#56-examples)
-- [6. Conclusion](#6-conclusion)
-- [7. Acknowledgements](#7-acknowledgements)
-- [8. References](#8-references)
+- [Beckn Architecture Design Philosophy and Principles](#beckn-architecture-design-philosophy-and-principles)
+        - [Request for Comments](#request-for-comments)
+  - [Document Details](#document-details)
+  - [Abstract](#abstract)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Specification](#specification)
+    - [Design Principles](#design-principles)
+    - [Network Actors](#network-actors)
+    - [API Surface and Interaction Model](#api-surface-and-interaction-model)
+    - [Conformance Requirements and Alignment Notes](#conformance-requirements-and-alignment-notes)
+    - [Security, Migration, and Evolution Notes](#security-migration-and-evolution-notes)
+    - [Examples](#examples)
+  - [Conclusion](#conclusion)
+  - [Acknowledgements](#acknowledgements)
+  - [References](#references)
 
-# 4. Introduction
+## Introduction
 
 Beckn has evolved into a multi-service value-exchange fabric spanning discovery, transaction, fulfillment, post-fulfillment, and infrastructure APIs. Without a formal architectural baseline, changes to API surface, actor roles, transport behavior, and schema semantics can drift across implementations. This RFC provides that baseline so protocol evolution remains coherent and aligned with the canonical v2 artifacts.
 
 The architectural intent is to keep transport behavior explicit, preserve semantic interoperability across domains and regions, and allow new actor roles and value-exchange patterns to emerge without redesigning the core structure. This motivates a catalog-first discovery model, asynchronous business workflows with synchronous acknowledgements, and generalized contract abstractions that remain reusable across use cases.
 
-# 5. Specification
+## Specification
 
 The key words MUST, SHOULD, and MAY in this document are to be interpreted as described in Click [here](./00_Keyword_Definitions.md).
 
-## 5.1 Design Principles
+### Design Principles
 
 1. **Decentralization**: Any evolution in the protocol MUST enable decentralization of the associated ecosystem. In the context of value-exchange, the further we move towards the edges of a value-exchange transaction, the more choice, optionality, and agency MUST emerge as a consequence. 
 2. **Fabric-driven:** Any evolution in the protocol MUST emerge as a consequence of evolution in the NFH Fabric. That means, any feature request MUST be a fabric feature request and not a protocol feature request. Based on the discussions following the feature request, a decision whether to support that feature as a run-time fabric feature, or a protocol feature will be taken. 
@@ -60,7 +62,7 @@ The key words MUST, SHOULD, and MAY in this document are to be interpreted as de
 6. **Reusability via abstraction:** Core concepts MUST remain abstract enough to be reused across diverse domains and regional deployments.
 7. **Trust by design:** Mandatory signatures and `CounterSignature` acknowledgements MUST remain baseline transport behavior.
 
-## 5.2 Network Actors
+### Network Actors
 
 Beckn Protocol v2 specification is designed to run as a layered stack built on a Universal Value Exchange Fabric:
 
@@ -81,7 +83,7 @@ All actors <-> Registry for trust resolution
 
 This topology preserves separation of concerns: infrastructure actors resolve discovery and trust, while transaction participants execute the lifecycle using shared transport and schema rules.
 
-## 5.3 API Surface and Interaction Model
+### API Surface and Interaction Model
 
 `api/v2.0.0/beckn.yaml` MUST be treated as the canonical v2.0.x interoperability artifact.
 
@@ -100,11 +102,11 @@ Beckn APIs SHOULD remain action-addressable through named paths per action to pr
 
 The request envelope MUST include `context` and `message`. Implementations MUST enforce `Authorization` signature validation and MUST support standard response families: `Ack`, `AckNoCallback`, `NackBadRequest`, `NackUnauthorized`, and `ServerError`. The transaction model SHOULD remain centered on generalized `Contract` entities and related abstractions for cross-domain compatibility. Schema semantics SHOULD remain composable through JSON-LD-compatible extension containers.
 
-## 5.4 Conformance Requirements and Alignment Notes
+### Conformance Requirements and Alignment Notes
 
 Architecture-level protocol changes to envelope, security, or acknowledgement semantics MUST be reviewed as interoperability-impacting changes. Implementations MUST treat `api/v2.0.0/beckn.yaml` as the source contract for v2.0.x endpoint and envelope behavior. Beckn deployments SHOULD preserve asynchronous request and callback semantics for lifecycle actions. Infrastructure capabilities such as publish, subscribe, pull, and search SHOULD be implemented as protocol-visible APIs where applicable.
 
-## 5.5 Security, Migration, and Evolution Notes
+### Security, Migration, and Evolution Notes
 
 This RFC reinforces security-by-design through mandatory request signatures and signed acknowledgements. No new cryptographic primitive is introduced by this document. The main security risk addressed is trust ambiguity caused by inconsistent transport semantics across implementations.
 
@@ -115,7 +117,7 @@ The following evolution questions remain open and inform future work:
 1. Slash and underscore action aliasing may need formal deprecation over a defined release window.
 2. Actor capability profiles for Fabric Nodes, BPP, CS, and DS may need publication as a separate normative RFC.
 
-## 5.6 Examples
+### Examples
 
 Example layered architecture view:
 
@@ -137,15 +139,15 @@ Post-Fulfillment: /rate, /on_rate, /support, /on_support
 Catalog Infra: /catalog/publish, /catalog/on_publish, /catalog/subscription, /catalog/pull, /catalog/master/*
 ```
 
-# 6. Conclusion
+## Conclusion
 
 This RFC establishes a durable architectural baseline for Beckn Protocol v2 by consolidating the philosophy, topology, interaction model, and conformance expectations into a single structure. It does not introduce wire-level migration; relative to the initial draft, this revision primarily restructures the RFC and aligns its wording with the canonical v2.0.0 architecture artifacts.
 
-# 7. Acknowledgements
+## Acknowledgements
 
 This RFC builds on the Beckn v2 OpenAPI contract, Beckn architecture documentation, and the broader Beckn community effort that shaped the protocol's transport, discovery, and trust model.
 
-# 8. References
+## References
 
 - Keyword definitions: Click [here](./00_Keyword_Definitions.md)
 - Canonical OpenAPI artifact: `api/v2.0.0/beckn.yaml`
