@@ -3912,6 +3912,7 @@ components:
             messageId:
               description: The message id of the request sent in the context, to which this acknowledgement is being returned.
               type: string
+              format: uuid
             error:
               $ref: '#/components/schemas/Error'
 
@@ -3947,6 +3948,7 @@ components:
               description: ACK if the request was accepted; NACK if rejected.
             messageId:
               type: string
+              format: uuid
             error:
               $ref: '#/components/schemas/Error'
 
@@ -3976,6 +3978,7 @@ components:
               const: NACK
             messageId:
               type: string
+              format: uuid
             error:
               $ref: '#/components/schemas/Error'
 
@@ -4006,6 +4009,7 @@ components:
               const: NACK
             messageId:
               type: string
+              format: uuid
             error:
               allOf:
               - $ref: '#/components/schemas/Error'
@@ -4051,6 +4055,7 @@ components:
               const: NACK
             messageId:
               type: string
+              format: uuid
             error:
               $ref: '#/components/schemas/Error'
 
@@ -4167,6 +4172,7 @@ components:
               const: NACK
             messageId:
               type: string
+              format: uuid
             error:
               allOf:
               - $ref: '#/components/schemas/Error'
@@ -4206,6 +4212,7 @@ components:
               const: NACK
             messageId:
               type: string
+              format: uuid
             error:
               allOf:
               - $ref: '#/components/schemas/Error'

@@ -506,7 +506,7 @@ Host: bpp.example.com
 Authorization: Signature keyId="bap.example.com/keys/k001|ed25519",algorithm="ed25519",created="1746518400",expires="1746518700",headers="(created) (expires) digest",signature="Base64EncodedEd25519SignatureHere=="
 Content-Type: application/json
 
-{"context":{"action":"select","transactionId":"txn-001","messageId":"msg-001",...},"message":{...}}
+{"context":{"action":"select","transactionId":"550e8400-e29b-41d4-a716-446655440001","messageId":"550e8400-e29b-41d4-a716-446655440000",...},"message":{...}}
 ```
 
 #### Example 2: BPP Synchronous Ack Response
@@ -518,10 +518,10 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 Signature: keyId="bpp.example.com/keys/k002|ed25519",algorithm="ed25519",created="1746518401",expires="1746518701",headers="(created) (expires) digest",signature="BPPSignatureOverAckBodyHere=="
 
-{"message":{"status":"ACK","messageId":"msg-001"}}
+{"message":{"status":"ACK","messageId":"550e8400-e29b-41d4-a716-446655440000"}}
 ```
 
-The BPP's `Signature` header signs the `{"message":{"status":"ACK","messageId":"msg-001"}}` body using the BPP's Ed25519 private key. The `messageId` echoes the `messageId` from the originating `/select` request's `context` object.
+The BPP's `Signature` header signs the `{"message":{"status":"ACK","messageId":"550e8400-e29b-41d4-a716-446655440000"}}` body using the BPP's Ed25519 private key. The `messageId` echoes the `messageId` from the originating `/select` request's `context` object.
 
 #### Example 3: BPP Solicited Callback to BAP
 
@@ -536,7 +536,7 @@ bap_signature_value = "Base64EncodedEd25519SignatureHere=="
 ##### Step 2 — Compute callback body digest
 
 ```
-callback_body = '{"context":{"action":"on_select","transactionId":"txn-001","messageId":"msg-001",...},"message":{...}}'
+callback_body = '{"context":{"action":"on_select","transactionId":"550e8400-e29b-41d4-a716-446655440001","messageId":"550e8400-e29b-41d4-a716-446655440000",...},"message":{...}}'
 digest = "BLAKE2b-512=" + Base64( BLAKE2b-512( UTF-8(callback_body) ) )
        = "BLAKE2b-512=rN4Wve49l+TIfTeH6jhYtCS3Ti+owCTOmRlMyy8OoQQ5..."
 ```
@@ -558,7 +558,7 @@ Host: bap.example.com
 Authorization: Signature keyId="bpp.example.com/keys/k002|ed25519",algorithm="ed25519",created="1746518450",expires="1746518750",headers="(created) (expires) digest request-signature",signature="BPPCallbackSignatureHere=="
 Content-Type: application/json
 
-{"context":{"action":"on_select","transactionId":"txn-001","messageId":"msg-001",...},"message":{...}}
+{"context":{"action":"on_select","transactionId":"550e8400-e29b-41d4-a716-446655440001","messageId":"550e8400-e29b-41d4-a716-446655440000",...},"message":{...}}
 ```
 
 ##### BAP verification
@@ -567,7 +567,7 @@ Content-Type: application/json
 2. Reconstruct the callback signing string using the four `headers` fields in declared order.
 3. Verify BPP's `signature` against the reconstructed string.
 4. Extract `request-signature` value: `Base64EncodedEd25519SignatureHere==`.
-5. Look up BAP's persisted signature for `messageId=msg-001`. They match → callback is authentic and solicited.
+5. Look up BAP's persisted signature for `messageId=550e8400-e29b-41d4-a716-446655440000`. They match → callback is authentic and solicited.
 6. Return `200 Ack` with BAP's own `Signature` response header.
 
 ## Conclusion
