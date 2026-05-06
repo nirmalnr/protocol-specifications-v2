@@ -1276,6 +1276,156 @@ paths:
                         const: catalog/publish
                 message:
                   $ref: '#/components/schemas/CatalogPublishAction'
+            examples:
+              simplePublish:
+                summary: Publish a catalog without publishDirectives (resources only, no offers — treated as master)
+                value:
+                  context:
+                    version: '2.0.0'
+                    action: catalog/publish
+                    messageId: 550e8400-e29b-41d4-a716-446655440000
+                    transactionId: 550e8400-e29b-41d4-a716-446655440001
+                    timestamp: '2026-03-04T10:00:00.000Z'
+                    bppId: bpp.techmart.com
+                    bppUri: https://bpp.techmart.com
+                    networkId: retail-network
+                  message:
+                    catalogs:
+                    - id: CAT-TECHMART-2026
+                      descriptor:
+                        name: TechMart Product Catalog
+                      provider:
+                        id: provider-techmart-001
+                        descriptor:
+                          name: TechMart Electronics
+                      resources:
+                      - id: ITEM-LAPTOP-001
+                        descriptor:
+                          name: Premium Laptop Pro
+                        resourceAttributes:
+                          '@context': https://schema.beckn.org/retail/schema/1.1.0/context.jsonld
+                          '@type': ElectronicsItem
+                          brand: TechBrand
+                          inStock: true
+              masterCatalogPublish:
+                summary: Publish a master catalog with FULL update mode
+                value:
+                  context:
+                    version: '2.0.0'
+                    action: catalog/publish
+                    messageId: 660e8400-e29b-41d4-a716-446655440002
+                    transactionId: 660e8400-e29b-41d4-a716-446655440003
+                    timestamp: '2026-03-04T09:00:00.000Z'
+                    bppId: manufacturer.example.com
+                    bppUri: https://manufacturer.example.com
+                    networkId: retail-network
+                  message:
+                    publishDirectives:
+                    - catalogId: MASTER-ELECTRONICS-2026
+                      visibleTo:
+                      - retail-network
+                      catalogType: master
+                      updateMode: FULL
+                    catalogs:
+                    - id: MASTER-ELECTRONICS-2026
+                      descriptor:
+                        name: Official Electronics Master Catalog 2026
+                      provider:
+                        id: manufacturer-001
+                        descriptor:
+                          name: Global Electronics Authority
+                      resources:
+                      - id: MASTER-LAPTOP-XPS-15
+                        descriptor:
+                          name: XPS 15 Laptop
+                          shortDesc: '15.6-inch FHD+ display, Intel Core i7, 16GB RAM, 512GB SSD'
+                        resourceAttributes:
+                          '@context': https://schema.beckn.org/retail/schema/1.1.0/context.jsonld
+                          '@type': ElectronicsItem
+                          brand: Dell
+                          model: XPS 15 9530
+                          processor: Intel Core i7-13700H
+              regularExtendingMaster:
+                summary: Regular catalog extending a master resource
+                value:
+                  context:
+                    version: '2.0.0'
+                    action: catalog/publish
+                    messageId: 770e8400-e29b-41d4-a716-446655440004
+                    transactionId: 770e8400-e29b-41d4-a716-446655440005
+                    timestamp: '2026-03-04T10:00:00.000Z'
+                    bppId: bpp.techmart.com
+                    bppUri: https://bpp.techmart.com
+                    networkId: retail-network
+                  message:
+                    publishDirectives:
+                    - catalogId: CAT-TECHMART-2026
+                      catalogType: regular
+                      updateMode: MERGE
+                      resourceDirectives:
+                      - resourceId: ITEM-LAPTOP-XPS-15-TECHMART
+                        extends:
+                          masterResourceId: MASTER-LAPTOP-XPS-15
+                    catalogs:
+                    - id: CAT-TECHMART-2026
+                      descriptor:
+                        name: TechMart Product Catalog
+                      provider:
+                        id: provider-techmart-001
+                        descriptor:
+                          name: TechMart Electronics
+                      resources:
+                      - id: ITEM-LAPTOP-XPS-15-TECHMART
+                        descriptor:
+                          name: XPS 15 - TechMart Edition
+                        resourceAttributes:
+                          '@context': https://schema.beckn.org/retail/schema/1.1.0/context.jsonld
+                          '@type': ElectronicsItem
+                          inStock: true
+                          deliveryEstimate: 3-5 business days
+              regularWithVariant:
+                summary: Regular catalog with a geographic variant of a master resource
+                value:
+                  context:
+                    version: '2.0.0'
+                    action: catalog/publish
+                    messageId: 880e8400-e29b-41d4-a716-446655440006
+                    transactionId: 880e8400-e29b-41d4-a716-446655440007
+                    timestamp: '2026-03-04T11:00:00.000Z'
+                    bppId: bpp.techmart.com
+                    bppUri: https://bpp.techmart.com
+                    networkId: retail-network
+                  message:
+                    publishDirectives:
+                    - catalogId: CAT-TECHMART-2026
+                      visibleTo:
+                      - retail-network
+                      - mobility-network
+                      catalogType: regular
+                      updateMode: MERGE
+                      resourceDirectives:
+                      - resourceId: ITEM-LAPTOP-XPS-15-TECHMART
+                        extends:
+                          masterResourceId: MASTER-LAPTOP-XPS-15
+                        variant:
+                          type: geo
+                          id: bangalore
+                          label: Bangalore region
+                    catalogs:
+                    - id: CAT-TECHMART-2026
+                      descriptor:
+                        name: TechMart Product Catalog
+                      provider:
+                        id: provider-techmart-001
+                        descriptor:
+                          name: TechMart Electronics
+                      resources:
+                      - id: ITEM-LAPTOP-XPS-15-TECHMART
+                        resourceAttributes:
+                          '@context': https://schema.beckn.org/retail/schema/1.1.0/context.jsonld
+                          '@type': ElectronicsItem
+                          deliveryEstimate: 1-2 business days
+                          localWarehouse: true
       responses:
         '200':
           $ref: '#/components/responses/Ack'
@@ -1470,14 +1620,7 @@ paths:
         '404':
           $ref: '#/components/responses/NackNotFound'
         '409':
-          description: A subscription with identical networkIds and schemaTypes already exists for this subscriber.
-          headers:
-            Signature:
-              $ref: '#/components/headers/SignatureHeader'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NackBadRequest'
+          $ref: '#/components/responses/NackBadRequest'
         '500':
           $ref: '#/components/responses/ServerError'
     delete:
@@ -1586,13 +1729,14 @@ paths:
       - $ref: '#/components/parameters/AuthorizationHeader'
       summary: Submit async catalog pull request
       description: "The BAP submits an asynchronous catalog pull request to the CS\
-        \ (Cataloging Service), specifying a retrieval mode and optional filters to\
-        \ select which catalogs to return.\n\nAdditional preconditions: context.version,\
-        \ context.action, context.bapUri, and message.mode MUST be supplied.\n\nThe\
-        \ message MUST contain a CatalogPullAction. The mode field MUST be either\
-        \ FULL (returns the latest version of each matching catalog) or INCREMENTAL\
-        \ (returns all catalog versions indexed between fromDate and toDate inclusive).\
-        \ Optional filters narrow the result by networkIds or schemaTypes.\n\nCallback\
+        \ (Cataloging Service), scoped to an active subscription. The subscription's\
+        \ networkIds and schemaTypes determine which catalogs are returned — they\
+        \ are not specified on this request.\n\nAdditional preconditions: context.version,\
+        \ context.action, context.transactionId, and message.subscriptionId MUST be\
+        \ supplied.\n\nThe message MUST contain a CatalogPullAction. The mode field\
+        \ MUST be either FULL (returns the latest version of each matching catalog)\
+        \ or INCREMENTAL (returns all catalog versions indexed between fromDate and\
+        \ toDate inclusive).\n\nCallback\
         \ relationship: The CS processes the pull request asynchronously and delivers\
         \ results via POST to the /catalog/on_pull callback. When the payload is\
         \ small it is returned inline; when it exceeds the configured inline threshold\
@@ -1651,7 +1795,7 @@ paths:
       tags:
       - Fabric API - Cataloging Service
       parameters:
-      - $ref: '#/components/parameters/AuthorizationHeader'
+      - $ref: '#/components/parameters/CallbackAuthorizationHeader'
       requestBody:
         required: true
         content:
@@ -1715,7 +1859,7 @@ paths:
                     properties:
                       action:
                         type: string
-                        const: catalog/master/search
+                        const: catalog/master_search
                 message:
                   $ref: '#/components/schemas/MasterSearchAction'
       responses:
@@ -1798,6 +1942,8 @@ paths:
                         type: array
                         items:
                           type: string
+        '400':
+          $ref: '#/components/responses/NackBadRequest'
         '401':
           $ref: '#/components/responses/NackUnauthorized'
         '429':
@@ -4224,9 +4370,8 @@ components:
       type: object
       description: >-
         Subscription request payload. At least one of `networkIds` or
-        `schemaTypes` is required for both creating and updating a subscription.
-
-        > **ℹ️ Info:** Updating an inactive subscription reactivates it.
+        `schemaTypes` MUST be provided — providing neither results in 400 NackBadRequest.
+        Updating an inactive subscription reactivates it.
       required:
       - subscription
       properties:
@@ -4311,12 +4456,15 @@ components:
       properties:
         total:
           type: integer
+          minimum: 0
           description: Total matching records
         limit:
           type: integer
+          minimum: 1
           description: Page size used in this response
         offset:
           type: integer
+          minimum: 0
           description: Zero-based offset used in this response
 
     MasterSearchAction:
@@ -4434,8 +4582,16 @@ components:
         \ via `requestId`."
       additionalProperties: false
       required:
+      - requestId
       - status
       properties:
+        requestId:
+          type: string
+          format: uuid
+          description: >-
+            The requestId echoed from the originating /catalog/pull request,
+            used by the subscriber to correlate the async callback with the
+            triggering request.
         status:
           type: string
           enum:
