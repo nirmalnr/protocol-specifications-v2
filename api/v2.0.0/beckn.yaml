@@ -1397,40 +1397,78 @@ paths:
                     messageId: 880e8400-e29b-41d4-a716-446655440006
                     transactionId: 880e8400-e29b-41d4-a716-446655440007
                     timestamp: '2026-03-04T11:00:00.000Z'
-                    bppId: bpp.techmart.com
-                    bppUri: https://bpp.techmart.com
-                    networkId: retail-network
+                    bppId: bpp.freshmart.com
+                    bppUri: https://bpp.freshmart.com
+                    networkId: grocery-network
                   message:
                     publishDirectives:
-                    - catalogId: CAT-TECHMART-2026
+                    - catalogId: CAT-FRESHMART-2026
                       visibleTo:
-                      - retail-network
-                      - mobility-network
+                      - grocery-network
+                      - hyperlocal-network
                       catalogType: regular
                       updateMode: MERGE
                       resourceDirectives:
-                      - resourceId: ITEM-LAPTOP-XPS-15-TECHMART
+                      - resourceId: ITEM-RICE-FRESHMART-BLR
                         extends:
-                          masterResourceId: MASTER-LAPTOP-XPS-15
+                          masterResourceId: MASTER-RICE-BASMATI-1KG
                         variant:
                           type: geo
                           id: bangalore
                           label: Bangalore region
                     catalogs:
-                    - id: CAT-TECHMART-2026
+                    - id: CAT-FRESHMART-2026
                       descriptor:
-                        name: TechMart Product Catalog
+                        name: FreshMart Grocery Catalog
+                      provider:
+                        id: provider-freshmart-001
+                        descriptor:
+                          name: FreshMart Groceries
+                      resources:
+                      - id: ITEM-RICE-FRESHMART-BLR
+                        resourceAttributes:
+                          '@context': https://schema.beckn.org/grocery/schema/1.0.0/context.jsonld
+                          '@type': GroceryItem
+                          deliveryEstimate: same-day
+                          localWarehouse: true
+              offerOnlyPublish:
+                summary: Offer-only catalog (pricing offers referencing master resources)
+                value:
+                  context:
+                    version: '2.0.0'
+                    action: catalog/publish
+                    messageId: 990e8400-e29b-41d4-a716-446655440008
+                    transactionId: 990e8400-e29b-41d4-a716-446655440009
+                    timestamp: '2026-03-04T12:00:00.000Z'
+                    bppId: bpp.techmart.com
+                    bppUri: https://bpp.techmart.com
+                    networkId: retail-network
+                  message:
+                    publishDirectives:
+                    - catalogId: CAT-TECHMART-OFFERS-2026
+                      catalogType: regular
+                      updateMode: MERGE
+                    catalogs:
+                    - id: CAT-TECHMART-OFFERS-2026
+                      descriptor:
+                        name: TechMart Seasonal Offers
                       provider:
                         id: provider-techmart-001
                         descriptor:
                           name: TechMart Electronics
-                      resources:
-                      - id: ITEM-LAPTOP-XPS-15-TECHMART
-                        resourceAttributes:
+                      offers:
+                      - id: OFFER-LAPTOP-SALE-APR
+                        descriptor:
+                          name: April Laptop Sale
+                        resourceIds:
+                        - MASTER-LAPTOP-XPS-15
+                        validity:
+                          startDate: '2026-04-01'
+                          endDate: '2026-04-30'
+                        offerAttributes:
                           '@context': https://schema.beckn.org/retail/schema/1.1.0/context.jsonld
-                          '@type': ElectronicsItem
-                          deliveryEstimate: 1-2 business days
-                          localWarehouse: true
+                          '@type': DiscountOffer
+                          discountPercent: 15
       responses:
         '200':
           $ref: '#/components/responses/Ack'
@@ -1552,6 +1590,8 @@ paths:
           $ref: '#/components/responses/NackUnauthorized'
         '409':
           $ref: '#/components/responses/AckNoCallback'
+        '429':
+          $ref: '#/components/responses/NackTooManyRequests'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -1644,6 +1684,8 @@ paths:
           $ref: '#/components/responses/NackNotFound'
         '409':
           $ref: '#/components/responses/NackBadRequest'
+        '429':
+          $ref: '#/components/responses/NackTooManyRequests'
         '500':
           $ref: '#/components/responses/ServerError'
     delete:
@@ -1693,6 +1735,8 @@ paths:
           $ref: '#/components/responses/NackForbidden'
         '404':
           $ref: '#/components/responses/NackNotFound'
+        '429':
+          $ref: '#/components/responses/NackTooManyRequests'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -1766,6 +1810,8 @@ paths:
           $ref: '#/components/responses/NackUnauthorized'
         '404':
           $ref: '#/components/responses/NackNotFound'
+        '429':
+          $ref: '#/components/responses/NackTooManyRequests'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -1837,6 +1883,8 @@ paths:
           $ref: '#/components/responses/NackBadRequest'
         '401':
           $ref: '#/components/responses/NackUnauthorized'
+        '429':
+          $ref: '#/components/responses/NackTooManyRequests'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -1891,6 +1939,8 @@ paths:
           $ref: '#/components/responses/NackBadRequest'
         '401':
           $ref: '#/components/responses/NackUnauthorized'
+        '429':
+          $ref: '#/components/responses/NackTooManyRequests'
         '500':
           $ref: '#/components/responses/ServerError'
 
