@@ -1602,7 +1602,9 @@ paths:
         \ catalogs are indexed.\n\nAdditional preconditions: At least one networkId\
         \ or schemaType MUST be provided (anyOf). An empty schemaTypes array is treated\
         \ as a wildcard matching all schema types for the specified networks. The\
-        \ BAP identity is extracted from the Authorization header.\n\nThe message\
+        \ BAP identity is extracted from the Authorization header.\n\nFabric context:\
+        \ This endpoint is hosted by the CS. The CS validates the caller's identity\
+        \ from the Authorization header and persists the subscription.\n\nThe message\
         \ MUST contain a CatalogSubscribeAction with a subscription object specifying\
         \ networkIds and optional schemaTypes.\n\nA 200 response returns the created\
         \ or updated CatalogSubscription in a CatalogSubscriptionResponse envelope.\
@@ -1821,7 +1823,9 @@ paths:
         \ networkIds and schemaTypes determine which catalogs are returned — they\
         \ are not specified on this request.\n\nAdditional preconditions: context.version,\
         \ context.action, context.transactionId, and message.subscriptionId MUST be\
-        \ supplied.\n\nThe message MUST contain a CatalogPullAction. The mode field\
+        \ supplied.\n\nFabric context: This endpoint is hosted by the CS. The CS\
+        \ queues the pull request for asynchronous processing and delivers results\
+        \ to the BAP via /catalog/on_pull.\n\nThe message MUST contain a CatalogPullAction. The mode field\
         \ MUST be either FULL (returns the latest version of each matching catalog)\
         \ or INCREMENTAL (returns all catalog versions published between fromDate and\
         \ toDate inclusive).\n\nCallback\
@@ -1832,11 +1836,13 @@ paths:
         \ The response Ack confirms acceptance; the requestId is delivered in the\
         \ /catalog/on_pull callback.\n\nA 200 Ack confirms the pull request was accepted;\
         \ results will be delivered asynchronously via /catalog/on_pull. A 400 NackBadRequest\
-        \ is returned when the subscriptionId is missing, does not exist, or does\
-        \ not belong to the caller, or when the mode, fromDate, or toDate values\
-        \ are invalid. A 401 NackUnauthorized is returned when the Authorization header\
-        \ signature is missing or invalid. A 500 ServerError indicates an unexpected\
-        \ CS failure; the BAP SHOULD retry."
+        \ is returned when the subscriptionId is missing or not a valid UUID, or when\
+        \ the mode, fromDate, or toDate values are invalid. A 401 NackUnauthorized\
+        \ is returned when the Authorization header signature is missing or invalid.\
+        \ A 403 NackForbidden is returned when the subscriptionId does not belong\
+        \ to the calling BAP. A 404 NackNotFound is returned when the subscriptionId\
+        \ does not exist. A 500 ServerError indicates an unexpected CS failure; the\
+        \ BAP SHOULD retry."
       operationId: catalogPull
       tags:
       - Fabric API - Cataloging Service
@@ -1955,11 +1961,12 @@ paths:
         \ preconditions: filters.networkIds and filters.schemaTypes are optional;\
         \ omitting or leaving them empty matches all networks and schema types respectively.\
         \ limit MUST be between 1 and 100 (default 20); offset MUST be non-negative\
-        \ (default 0).\n\nThe message MUST contain a MasterSearchAction with optional\
+        \ (default 0).\n\nFabric context: This endpoint is hosted by the CS. The\
+        \ CS queries the master resource index and returns matching items synchronously.\n\nThe message MUST contain a MasterSearchAction with optional\
         \ filters for networkIds and schemaTypes, and optional pagination parameters.\
         \ All responses are wrapped in a Beckn envelope with action set to \"catalog/on_master_search\".\n\
         \nA 200 response returns the matching master catalog items directly in a catalogs\
-        \ array — this endpoint is synchronous and does not use an async callback.\
+        \ array.\
         \ A 400 NackBadRequest is returned for an invalid payload or out-of-range\
         \ pagination parameters. A 401 NackUnauthorized is returned when the Authorization\
         \ header signature is missing or invalid. A 429 NackTooManyRequests is returned\
@@ -2035,9 +2042,10 @@ paths:
       summary: CS returns distinct schema types available for master resources
       description: "The BAP or BPP retrieves the distinct set of schema type URIs\
         \ available in the CS (Cataloging Service), for use\
-        \ in constructing subscription filters or search queries.\n\nA 200 response\
-        \ returns the schema type URIs directly in a schemaTypes array — this endpoint\
-        \ is synchronous and does not use an async callback. A 400 NackBadRequest\
+        \ in constructing subscription filters or search queries.\n\nFabric context:\
+        \ This endpoint is hosted by the CS. The CS queries the master resource index\
+        \ and returns the schema type list synchronously.\n\nA 200 response\
+        \ returns the schema type URIs directly in a schemaTypes array. A 400 NackBadRequest\
         \ is returned for a malformed request. A 401 NackUnauthorized is returned\
         \ when the Authorization header signature is missing or invalid. A 429 NackTooManyRequests\
         \ is returned when the request rate exceeds the CS rate limit. A 500 ServerError\
@@ -2091,9 +2099,10 @@ paths:
         \ identifier from the CS (Cataloging Service), returned in a standard Beckn\
         \ catalog envelope.\n\nAdditional preconditions: The masterResourceId path\
         \ parameter MUST match the pattern ^[a-zA-Z0-9_\\-:.]+$ — requests with\
-        \ identifiers containing other characters are rejected.\n\nA 200 response returns the master catalog item\
-        \ directly in a catalogs array (exactly one entry) — this endpoint is synchronous\
-        \ and does not use an async callback. A 400 NackBadRequest is returned when\
+        \ identifiers containing other characters are rejected.\n\nFabric context:\
+        \ This endpoint is hosted by the CS. The CS retrieves the requested master\
+        \ resource from the index and returns it synchronously.\n\nA 200 response returns the master catalog item\
+        \ directly in a catalogs array (exactly one entry). A 400 NackBadRequest is returned when\
         \ the masterResourceId format is invalid. A 401 NackUnauthorized is returned\
         \ when the Authorization header signature is missing or invalid. A 404 NackNotFound\
         \ is returned when no master item with the given ID exists. A 429 NackTooManyRequests\
