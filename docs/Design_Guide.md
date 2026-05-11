@@ -12,15 +12,15 @@ Copyright © 2026 Networks for Humanity Foundation. Licensed under [CC-BY-NC-SA 
 
 - **ID:** NFH-005
 - **Publication Status:** Draft.
-- **Authors:** 
-  - Ravi Prakash V, Networks for Humanity Foundation 
+- **Authors:**
+  - [Ravi Prakash](https://github.com/ravi-prakash-v), [Networks for Humanity](https://networksforhumanity.org)
 - **Created:** 2026-04-10.
 - **Updated:** 2026-04-10.
 - **Version history:** Draft-01 (2026-04-10): Initial publication as RFC-005. Restructured from `05_Specification_Authoring_Style_Guide.md` into RFC form. Draft-02 (2026-05-11): Mandated path parameters for stateful resource identifiers; replaced `on_*` callback convention for stateful async APIs with REST callback convention; added RFC Approval Gate section; added CON-005-16, CON-005-17, CON-005-18, and CON-005-19.
 - **Latest editor's draft:** Click [here](https://github.com/beckn/protocol-specifications-v2/blob/release-v2.0.0-lts/docs/Design_Guide.md).
-- **Implementation report:** Not applicable (authoring and governance guidance RFC).
-- **Stress test report:** Not applicable.
-- **Conformance impact:** Normative for authoring quality and interoperability hygiene.
+- **Implementation report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Stress test report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Conformance impact:** Not determined. This document is at Initial Draft status; impact will be classified in the next formal release of this RFC, following merge to main.
 - **Security/privacy implications:** Reduces semantic ambiguity that can cause unsafe processing or misinterpretation.
 - **Replaces / Relates to:** Replaces non-RFC-form content in `05_Specification_Authoring_Style_Guide.md`.
 - **Feedback:** Issues Click [here](https://github.com/beckn/protocol-specifications-v2/issues?q=is%3Aissue+label%3A%22RFC-005%22), Discussions Click [here](https://github.com/beckn/protocol-specifications-v2/discussions?discussions_q=label%3A%22RFC-005%22), Pull Requests Click [here](https://github.com/beckn/protocol-specifications-v2/pulls?q=is%3Apr+label%3A%22RFC-005%22).

@@ -4,14 +4,15 @@
 
 - **ID:** NFH-003
 - **Status:** Draft.
-- **Authors:** Beckn Protocol contributors.
+- **Authors:**
+  - [Ravi Prakash](https://github.com/ravi-prakash-v), [Networks for Humanity](https://networksforhumanity.org)
 - **Created:** 2026-04-10.
 - **Updated:** 2026-04-10.
 - **Version history:** Repository history on `main` does not yet show commits for this file; Draft-01 (2026-04-10) migrated the protocol stack guide into RFC template structure.
 - **Latest editor's draft:** Click [here](https://github.com/beckn/protocol-specifications-v2/blob/draft/docs/03_The_Beckn_Protocol_Stack.md).
-- **Implementation report:** Informative RFC; no standalone implementation report required.
-- **Stress test report:** Not applicable for this architecture-overview RFC.
-- **Conformance impact:** Informative with normative guidance for layer responsibilities.
+- **Implementation report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Stress test report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Conformance impact:** Not determined. This document is at Initial Draft status; impact will be classified in the next formal release of this RFC, following merge to main.
 - **Security/privacy implications:** Clarifies trust-layer and signature responsibilities across the stack.
 - **Replaces / relates to:** Replaces non-RFC-form content in `03_The_Beckn_Protocol_Stack.md`.
 - **Feedback:** Issues Click [here](https://github.com/beckn/protocol-specifications-v2/issues?q=is%3Aissue+label%3A%22RFC-003%22), discussions Click [here](https://github.com/beckn/protocol-specifications-v2/discussions?discussions_q=label%3A%22RFC-003%22), pull requests Click [here](https://github.com/beckn/protocol-specifications-v2/pulls?q=is%3Apr+label%3A%22RFC-003%22).
@@ -58,7 +59,7 @@ The stack is guided by four implementation principles: each layer MUST own a cle
 
 ## Specification
 
-The key words MUST, SHOULD, and MAY in this document are to be interpreted as described in Click [here](./00_Keyword_Definitions.md).
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described [here](./Keyword_Definitions.md). These definitions aim to ensure that the terms are understood precisely and consistently to avoid confusion in the interpretation of standards, specifications, and protocols.
 
 ### Stack definition
 

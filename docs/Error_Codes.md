@@ -5,17 +5,17 @@
 - **ID:** NFH-008
 - **Status:** Draft.
 - **Authors:**
-  - [Abhishek Jain](https://github.com/abhimail), [Networks for Humanity Foundation](https://networksforhumanity.org)
-  - [Ravi Prakash](https://github.com/ravi-prakash-v), [Networks for Humanity Foundation](https://networksforhumanity.org)
+  - [Abhishek Jain](https://github.com/abhimail), [Networks for Humanity](https://networksforhumanity.org)
+  - [Ravi Prakash](https://github.com/ravi-prakash-v), [Networks for Humanity](https://networksforhumanity.org)
 - **Editors:**
   - [Ravi Prakash](https://github.com/ravi-prakash-v), Networks for Humanity Foundation
 - **Created:** 2026-05-04.
 - **Updated:** 2026-05-05.
 - **Version history:** Click [here](https://github.com/beckn/protocol-specifications-v2/commits/main/docs/Error_Codes.md).
 - **Latest editor's draft:** Click [here](https://github.com/beckn/protocol-specifications-v2/blob/draft/docs/Error_Codes.md).
-- **Implementation report:** To be published.
-- **Stress test report:** To be published.
-- **Conformance impact:** Minor.
+- **Implementation report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Stress test report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Conformance impact:** Not determined. This document is at Initial Draft status; impact will be classified in the next formal release of this RFC, following merge to main.
 - **Security/privacy implications:** Defines error representations for authentication and non-repudiation failures; incorrect error signaling may mask signature or replay-attack failures across hops.
 - **Replaces / Relates to:** Supersedes [BECKN-005](https://github.com/beckn/protocol-specifications/blob/master/docs/BECKN-005-Error-Codes-Draft-01.md) (v1 numeric error codes). Relates to [NFH-003: The Beckn Protocol Stack](./The_Beckn_Protocol_Stack.md), [NFH-006: API Endpoints](./API.md), and [NFH-007: Schema Navigation](./Core_Data_Schema.md).
 - **Feedback:**
@@ -38,6 +38,9 @@ This RFC defines how exceptions and errors are represented, classified, and hand
   - [Specification](#specification)
     - [Definitions](#definitions)
     - [Exceptions and Errors in Beckn](#exceptions-and-errors-in-beckn)
+      - [What is an Exception?](#what-is-an-exception)
+      - [What is an Error?](#what-is-an-error)
+      - [The Key Principle](#the-key-principle)
     - [Error Object Schema](#error-object-schema)
     - [Error Layer Taxonomy](#error-layer-taxonomy)
     - [Canonical Error Code Set](#canonical-error-code-set)
@@ -125,7 +128,7 @@ This RFC responds to these changes by introducing a canonical, layered, string-b
 
 ## Specification
 
-The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described Click [here](./Keyword_Definitions.md).
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described [here](./Keyword_Definitions.md). These definitions aim to ensure that the terms are understood precisely and consistently to avoid confusion in the interpretation of standards, specifications, and protocols.
 
 ### Definitions
 

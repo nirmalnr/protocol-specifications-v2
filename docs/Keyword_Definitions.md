@@ -3,15 +3,15 @@
 ## Document Details
 - **ID:** NFH-002
 - **Status:** PUBLISHED
-- **Authors:** 
-  - **[Ravi Prakash, V](https://github.com/ravi-prakash-v)**, [Networks for Humanity](https://github.com/Networks-for-Humanity)
+- **Authors:**
+  - [Ravi Prakash](https://github.com/ravi-prakash-v), [Networks for Humanity](https://networksforhumanity.org)
 - **Created:** 27th April, 2026
 - **Updated:** 27th April, 2026
 - **Version history:** Repository history on `main` does not yet show commits for this file
 - **Latest editor's draft:** Click [here](https://github.com/beckn/protocol-specifications-v2/blob/draft/docs/Keyword_Definitions.md)
-- **Implementation report:** Informative RFC; no standalone implementation report required.
-- **Stress test report:** -NA-
-- **Conformance impact:** -NA-
+- **Implementation report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Stress test report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Conformance impact:** Not determined. This document is at Initial Draft status; impact will be classified in the next formal release of this RFC, following merge to main.
 - **Security/privacy implications:** -NA-
 - **Replaces / relates to:** -NA-
 - **Feedback:** Issues Click [here](https://github.com/beckn/protocol-specifications-v2/issues?q=is%3Aissue+label%3A%NFH-002%22), discussions Click [here](https://github.com/beckn/protocol-specifications-v2/discussions?discussions_q=label%3A%22RFC-003%22), pull requests Click [here](https://github.com/beckn/protocol-specifications-v2/pulls?q=is%3Apr+label%3A%22RFC-003%22).

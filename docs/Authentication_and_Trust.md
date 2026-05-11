@@ -4,14 +4,14 @@
 - **ID:** NFH-004
 - **Status:** Draft
 - **Authors:**
-  - [Ravi Prakash](https://github.com/ravi-beckn), Beckn Protocol
+  - [Ravi Prakash](https://github.com/ravi-prakash-v), [Networks for Humanity](https://networksforhumanity.org)
 - **Created:** 2026-05-05
 - **Updated:** 2026-05-05
 - **Version history:** Draft-01 (2026-05-05): Initial publication.
 - **Latest editor's draft:** [Authentication_and_Trust.md](./Authentication_and_Trust.md)
-- **Implementation report:** To be published.
-- **Stress test report:** To be published.
-- **Conformance impact:** Major
+- **Implementation report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Stress test report:** Not available. This document is at Initial Draft status; report will be linked in the next formal release of this RFC, following merge to main.
+- **Conformance impact:** Not determined. This document is at Initial Draft status; impact will be classified in the next formal release of this RFC, following merge to main.
 - **Security/privacy implications:** This RFC defines the complete authentication and non-repudiation model for all Beckn Protocol interactions. Incorrect implementation of any normative requirement creates exploitable vulnerabilities including message forgery, replay attacks, and man-in-the-middle substitution.
 - **Replaces / Relates to:** Supersedes BECKN-006 Signing Beckn APIs in HTTP Draft-01. Relates to [Identity and Addressing](./Identity_and_Addressing.md).
 - **Feedback:**
