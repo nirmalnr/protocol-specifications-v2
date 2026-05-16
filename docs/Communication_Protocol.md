@@ -569,6 +569,60 @@ No. Network operators have no role in `transactionId` management. All Beckn comm
 
 The DS MUST aggregate all responses — from static catalog data and from dynamic PN callbacks — before sending `on_discover` to the CN (CON-013-24). Direct forwarding of PN `on_discover` responses to the CN was the Beckn v1 BG pattern and is deprecated in Beckn v2. If the aggregated catalog is large, the DS MAY send it in multiple paginated `on_discover` callbacks, each carrying the same `messageId` as the original `discover` request (CON-013-25). A CN that does not want to use a DS MAY call PNs directly using the parallel multicast pattern and aggregate responses itself.
 
+---
+
+**Q: What is the difference between `AckNoCallback` (409) and `NackDiscretionary` (403)? Both seem to mean "no further action."**
+
+They are different in intent. `AckNoCallback` means the PN received and authenticated the request without any problem, but has nothing to say in response — for example, no catalog matched the discovery query, or the provider's inventory is empty. It is a valid, successful outcome with an empty result. `NackDiscretionary` means the PN chose not to engage at all — it is a refusal, not an empty result. A PN returning `AckNoCallback` would likely engage under different query parameters; a PN returning `NackDiscretionary` is declining based on policy, trust level, or capacity, regardless of the request content.
+
+**Q: The protocol is described as "stateless," but nodes clearly store transaction data. What does stateless mean in this context?**
+
+Stateless here means there is no shared, synchronized state between nodes — not that nodes store no state at all. Each node maintains its own independent internal state. What Beckn Protocol does not define or require is a mechanism for the two nodes to keep their state in sync. The protocol does not command nodes to adopt each other's state; each message declares what the sender's own state is at that moment. Both nodes may have different internal views of the transaction at any given time, and both are correct from their own perspective.
+
+**Q: Can a CN send multiple different forward requests to the same PN within a single transaction?**
+
+Yes. A typical transaction includes several distinct forward requests under the same `transactionId` — for example, `select`, `init`, and `confirm` are three separate forward requests, each with its own `messageId`, all sent to the same PN under a common `transactionId`. Each request–callback pair is independent and correlates via its own `messageId`.
+
+**Q: Who assigns the `transactionId` — the CN or the PN?**
+
+The CN assigns the `transactionId` at the start of the session. The PN copies it from every incoming forward request into every outgoing callback. The PN MUST NOT generate or modify the `transactionId`.
+
+**Q: Can a PN also initiate a new transaction with a CN, or can only CNs initiate transactions?**
+
+TBA.
+
+**Q: What should a CN do if it receives an `on_confirm` from a PN but disagrees with the state declared in it — for example, the PN's `on_confirm` says the order status is `CANCELLED` but the CN expected `ACTIVE`?**
+
+TBA.
+
+**Q: What happens if a PN sends an Ack but then never delivers the promised callback?**
+
+TBA.
+
+**Q: What should a CN do after receiving a `ServerError` (500)? Should it retry with the same `messageId` or a new one?**
+
+TBA.
+
+**Q: Does one `status` request trigger all future `on_status` callbacks indefinitely, or does each `on_status` push require a new `status` request?**
+
+A single `status` request can trigger multiple `on_status` callbacks from the PN without the CN re-issuing `status`. The PN may continue pushing state updates — "In Transit", "Out for Delivery", "Delivered" — all under the same `messageId` as the original request (see §9). The CN does not need to poll. However, the CN is also free to send a fresh `status` request at any time to explicitly request an update; this would create a new `messageId` and its own callback chain.
+
+**Q: Is there a way for a CN to explicitly signal to a PN that a session is over?**
+
+TBA.
+
+**Q: In a cascaded flow, does the consumer-facing CN have any visibility into the downstream logistics transaction initiated by the Retail PN?**
+
+TBA.
+
+**Q: What should a CN do if it sends a parallel multicast to two PNs and one responds with Ack but the other responds with Nack or AckNoCallback?**
+
+TBA.
+
+**Q: Can Beckn Protocol be implemented over communication channels other than HTTP, such as WebSockets, MQTT, or a message queue?**
+
+Yes. The protocol specifies an asynchronous messaging model that is transport-agnostic. HTTP is the reference implementation described in this RFC, but the request–callback pattern, `messageId` correlation, and `transactionId` scoping apply to any transport that can carry the Beckn `context` and `message` envelope. Transport-specific binding rules for non-HTTP implementations are outside the scope of this RFC.
+
 ## Acknowledgements
 
 BECKN-RFC-003 (Ravi Prakash, Sujith Nair, Pramod Varma, 2021) provided the foundational concepts that this document formalises for Beckn Protocol v2.
