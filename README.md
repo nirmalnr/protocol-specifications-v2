@@ -30,6 +30,8 @@ protocol-specifications-v2/
 │   └── v2.0.0/
 │       ├── beckn.yaml
 │       └── README.md
+├── docs/
+│   └── *.md   (NFH-001 through NFH-013 RFC documents)
 ├── GOVERNANCE.md
 ├── LICENSE
 └── README.md
@@ -39,6 +41,7 @@ protocol-specifications-v2/
 
 - [`api/v2.0.0/beckn.yaml`](api/v2.0.0/beckn.yaml) — authoritative OpenAPI 3.1.1 specification for Beckn Protocol v2.0.0.
 - [`api/v2.0.0/README.md`](api/v2.0.0/README.md) — API package overview, endpoint families, and operational notes.
+- [`docs/`](docs/) — normative RFC documents (NFH-001 through NFH-013) covering architecture, protocol stack, API endpoints, authentication, error handling, design guides, and schema governance. See [`docs/README.md`](docs/README.md) for the suggested reading order.
 - [`ACKNOWLEDGEMENTS.md`](ACKNOWLEDGEMENTS.md) — contributor recognition for this release line.
 
 ---
@@ -131,7 +134,7 @@ For a concise package-level summary, see [`api/v2.0.0/README.md`](api/v2.0.0/REA
 ## Security and Protocol Semantics
 
 - All protocol requests are expected to carry Beckn HTTP Signatures via the `Authorization` header as defined in [`api/v2.0.0/beckn.yaml`](api/v2.0.0/beckn.yaml).
-- `Ack` responses confirm receipt at the transport layer; business completion happens asynchronously through callback flows where applicable.
+- `Ack` responses confirm receipt at the transport layer; the responding actor signs the response payload and returns the signature in the `Signature` response header for the caller to verify. Business completion happens asynchronously through callback flows where applicable.
 - `context.action` must match the semantics of the endpoint being invoked.
 - `context.try` supports sandbox-style operation for applicable flows such as update, cancel, rate, and support.
 - Error handling is standardized through response schemas such as `NackBadRequest`, `NackUnauthorized`, and `ServerError`.
@@ -151,6 +154,7 @@ Use this repository as the reference baseline for:
 - and onboarding implementers through the versioned API package and governance references.
 
 When working at the API and transport level, start with [`api/v2.0.0/beckn.yaml`](api/v2.0.0/beckn.yaml).
+When working at the specification and design level, start with [`docs/README.md`](docs/README.md).
 When working at the process and policy level, start with [`GOVERNANCE.md`](GOVERNANCE.md).
 
 ---
@@ -159,6 +163,7 @@ When working at the process and policy level, start with [`GOVERNANCE.md`](GOVER
 
 - [`ACKNOWLEDGEMENTS.md`](ACKNOWLEDGEMENTS.md)
 - [`api/v2.0.0/README.md`](api/v2.0.0/README.md)
+- [`docs/README.md`](docs/README.md)
 - [`GOVERNANCE.md`](GOVERNANCE.md)
 - [`CONTRIBUTING.md`](CONTRIBUTING.md)
 - [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)
