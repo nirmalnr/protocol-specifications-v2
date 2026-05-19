@@ -2290,12 +2290,6 @@ components:
       properties:
         intent:
           $ref: '#/components/schemas/Intent'
-        text_search:
-          type: string
-          description: Legacy flat free-text discover query
-        textSearch:
-          type: string
-          description: Flat free-text discover query
       additionalProperties: false
       required:
       - intent
