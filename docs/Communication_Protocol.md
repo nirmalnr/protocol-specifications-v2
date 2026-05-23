@@ -139,10 +139,11 @@ The response families defined in `api/v2.0.0/beckn.yaml` are:
 | HTTP Status | Response Name | Meaning |
 |---|---|---|
 | 200 | `Ack` | Request received, authenticated, and queued for processing. A callback will follow. |
-| 409 | `AckNoCallback` | Request received and authenticated, but the PN has determined that no callback will follow (e.g., no matching catalog, provider closed, inventory unavailable). |
+| 202 | `AckNoCallback` | Request received and authenticated, but the PN has determined that no callback will follow (e.g., no matching catalog, provider closed, inventory unavailable). |
 | 400 | `NackBadRequest` | Request body is structurally invalid or fails semantic validation. The sender MUST correct the request before retrying. |
 | 401 | `NackUnauthorized` | The HTTP Signature is absent, expired, or fails Registry key verification. The sender MUST obtain a valid signature before retrying. |
 | 403 | `NackDiscretionary` | The receiving node declines engagement for policy-governed reasons (insufficient caller trust, capacity limits, scheduled inactivity). No callback will follow. |
+| 409 | `NackConflict` | Request conflicts with existing persisted state (e.g., a subscription with the same criteria already exists for this subscriber). The sender MUST resolve the conflict before retrying. |
 | 429 | `NackTooManyRequests` | Rate limit or capacity limit exceeded. The sender MUST apply back-off before retrying. The response SHOULD include a `Retry-After` header. |
 | 500 | `ServerError` | An internal error prevented the receiving node from processing the request. |
 
@@ -424,7 +425,7 @@ sequenceDiagram
 | CON-013-06 | An initiating node MUST assign a globally unique `context.messageId` for each forward request. | MUST |
 | CON-013-07 | A CN MUST expose a publicly reachable HTTPS callback endpoint capable of receiving both solicited and PN-initiated callbacks from any PN. | MUST |
 | CON-013-08 | A CN MUST NOT treat an `Ack` response as the business response to a forward request. | MUST NOT |
-| CON-013-09 | A PN returning `AckNoCallback` (HTTP 409) MUST NOT subsequently send a callback for that `messageId`. | MUST NOT |
+| CON-013-09 | A PN returning `AckNoCallback` (HTTP 202) MUST NOT subsequently send a callback for that `messageId`. | MUST NOT |
 | CON-013-10 | After any Nack response, no callback will follow. The CN MAY retry the request with a new `messageId`. | MAY |
 | CON-013-11 | A CN MUST NOT block its own workflow awaiting a PN callback. The CN SHOULD advance its own state using the last known information. | MUST NOT |
 | CON-013-12 | A CN MUST accept and process authenticated PN-initiated callbacks. A CN MUST NOT reject a callback solely because its `messageId` does not match a pending forward request. | MUST |
@@ -570,7 +571,7 @@ The DS MUST aggregate all responses — from static catalog data and from dynami
 
 ---
 
-**Q: What is the difference between `AckNoCallback` (409) and `NackDiscretionary` (403)? Both seem to mean "no further action."**
+**Q: What is the difference between `AckNoCallback` (202) and `NackDiscretionary` (403)? Both seem to mean "no further action."**
 
 They are different in intent. `AckNoCallback` means the PN received and authenticated the request without any problem, but has nothing to say in response — for example, no catalog matched the discovery query, or the provider's inventory is empty. It is a valid, successful outcome with an empty result. `NackDiscretionary` means the PN chose not to engage at all — it is a refusal, not an empty result. A PN returning `AckNoCallback` would likely engage under different query parameters; a PN returning `NackDiscretionary` is declining based on policy, trust level, or capacity, regardless of the request content.
 

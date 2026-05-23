@@ -78,7 +78,7 @@ Most request operations use `context` and `message` envelopes.
 Standard response families are:
 
 - `Ack`
-- `AckNoCallback` (`409`)
+- `AckNoCallback` (`202`)
 - `NackBadRequest` (`400`)
 - `NackUnauthorized` (`401`)
 - `ServerError` (`500`)
