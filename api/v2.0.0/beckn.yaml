@@ -2051,7 +2051,7 @@ components:
       required: true
       description: "Beckn HTTP Signature authentication header for CN requests and\
         \ PN-initiated callbacks. The signing string covers `(created)`,\
-        \ `(expires)`, and the BLAKE-512 body digest.\n\nSee `#/components/schemas/Signature`\
+        \ `(expires)`, and the BLAKE2b-512 body digest.\n\nSee `#/components/schemas/Signature`\
         \ for the wire format and signing string construction. For PN solicited callbacks,\
         \ use `CallbackAuthorizationHeader` instead."
       schema:
@@ -2062,7 +2062,7 @@ components:
       required: true
       description: "Beckn HTTP Callback Signature authentication header for PN solicited\
         \ callbacks to CN `/on_*` endpoints. The signing string covers `(created)`,\
-        \ `(expires)`, the BLAKE-512 body digest, and `request-signature` — the\
+        \ `(expires)`, the BLAKE2b-512 body digest, and `request-signature` — the\
         \ raw Base64 signature value from the triggering CN request's `Authorization`\
         \ header. This chain proves the callback is a genuine response to the CN's\
         \ original request.\n\nEndpoints that also accept PN-initiated callbacks\
@@ -2915,7 +2915,7 @@ components:
         \ a request; the PN assigns bppId and bppUri when it is the receiving actor.\
         \ Fabric services such as the CS (Cataloging Service) and DS (Discovery Service)\
         \ validate the version, action, and signature fields as part of request authentication.\n\nRelationship: Composes the RequestDigest schema via the\
-        \ requestDigest property, which carries the BLAKE-512 hash of the originating\
+        \ requestDigest property, which carries the BLAKE2b-512 hash of the originating\
         \ request body for non-repudiation of the asynchronous callback leg."
       type: object
       title: Context
@@ -3465,7 +3465,7 @@ components:
         \ original inbound request body and including that hash in the callback Context;\
         \ the receiving actor verifies it to confirm that the callback corresponds\
         \ to the claimed original request.\n\nVerification requires two steps: recomputing\
-        \ the BLAKE-512 digest of the original request body and comparing it to\
+        \ the BLAKE2b-512 digest of the original request body and comparing it to\
         \ the digest field, then confirming that the messageId matches the messageId\
         \ from the original request Context.\n\nRelationship: Composed within the\
         \ Context schema via the requestDigest property."
@@ -3476,7 +3476,7 @@ components:
         digest:
           type: string
           pattern: ^BLAKE-512=[A-Za-z0-9+/]+=*$
-          description: 'BLAKE-512 hash of the parent request body, Base64-encoded with algorithm prefix.
+          description: 'BLAKE2b-512 hash of the parent request body, Base64-encoded with algorithm prefix.
 
             Format: `BLAKE-512={base64EncodedHash}`'
 
@@ -3849,7 +3849,7 @@ components:
         \ the Authorization header MUST be `\"(created) (expires) digest\"`. The\
         \ `keyId` field identifies the signer using the format `{namespace}/{registry}/{record}|ed25519`\
         \ (implicit, resolved at GRR) or a full dedi protocol URL followed by `|ed25519`\
-        \ (explicit). The algorithm MUST be `ed25519`. The body digest MUST use BLAKE-512\
+        \ (explicit). The algorithm MUST be `ed25519`. The body digest MUST use BLAKE2b-512\
         \ encoded as `BLAKE-512={Base64}`.\n\nUsed for: CN→PN requests across\
         \ all phases of the value-exchange lifecycle; PN→CN PN-initiated callbacks.\
         \ The receiving actor verifies it against the sender's registered public key.\
@@ -3879,7 +3879,7 @@ components:
         \ to the triggering request.\n\nThe `headers` attribute MUST be `\"(created)\
         \ (expires) digest request-signature\"`. The `keyId` identifies the PN signer.\
         \ The algorithm MUST be `ed25519`. The body digest covers the callback body\
-        \ using BLAKE-512.\n\nUsed for: PN→CN solicited callbacks only. For PN-initiated\
+        \ using BLAKE2b-512.\n\nUsed for: PN→CN solicited callbacks only. For PN-initiated\
         \ notifications (no preceding CN request), use the standard Signature schema\
         \ instead. For synchronous response signing, see components/headers/AckSignatureHeader.\
         \ See NFH-004 Authentication and Trust §6 for the full callback signing procedure."
@@ -3904,7 +3904,7 @@ components:
         \ signed request that triggered it.\n\nThe `headers` attribute MUST be `\"(created)\
         \ (expires) digest request-signature\"`. The `keyId` identifies the responding\
         \ NP. The algorithm MUST be `ed25519`. The body digest covers the response\
-        \ body using BLAKE-512.\n\nUsed for: all synchronous HTTP responses across\
+        \ body using BLAKE2b-512.\n\nUsed for: all synchronous HTTP responses across\
         \ all Beckn endpoints. For request signing, see Signature. For PN solicited\
         \ callback signing, see CallbackSignature. See NFH-004 Authentication and\
         \ Trust §5 for the full response signing procedure."
