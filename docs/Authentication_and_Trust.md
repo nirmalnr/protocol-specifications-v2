@@ -155,10 +155,11 @@ example-bap.beckn.io|ae3ea24b-cfec-495e-81f8-044aaef164ac|ed25519
 The verifying NP MUST resolve the signing key by looking up the subscriber's key record from the registry using the `subscriber_id` and `unique_key_id` components extracted from the `keyId`. The verifying NP MUST:
 
 1. Extract `subscriber_id`, `unique_key_id`, and `algorithm` from the `keyId`.
-2. Look up the subscriber's key record from the registry using `subscriber_id` and `unique_key_id`.
-3. Extract the signing public key from the registry response.
-4. Verify the Ed25519 signature using that public key.
-5. If the lookup fails or returns no key, reject with `401`.
+2. Confirm the `algorithm` component extracted from the `keyId` matches the `algorithm` attribute of the `Authorization` header and equals `ed25519`. If it does not, reject with `401`.
+3. Look up the subscriber's key record from the registry using `subscriber_id` and `unique_key_id`.
+4. Extract the signing public key from the registry response.
+5. Verify the Ed25519 signature using that public key.
+6. If the lookup fails or returns no key, reject with `401`.
 
 > **Informative — Beckn Fabric registry lookup.** The URL shape below reflects how the current Beckn Fabric dedi registry resolves a key; it is a Fabric deployment convention, **not** a normative part of the dedi protocol, and other registries MAY use a different scheme. The Fabric registry plugin builds the lookup URL as:
 >
@@ -166,7 +167,7 @@ The verifying NP MUST resolve the signing key by looking up the subscriber's key
 > {registry_base_url}/lookup/{subscriber_id}/{registry_scope}/{unique_key_id}
 > ```
 >
-> where `{registry_base_url}` is the configured registry endpoint (e.g. `https://fabric.nfh.global`) and `{registry_scope}` is a registry-specific segment. In the current Beckn Fabric deployment this scope segment is the fixed value `subscribers.beckn.one`, which instructs the Fabric registry to search across all cached registries. The signing public key is read from the response at `data.details.signing_public_key`, and the encryption public key (where present) at `data.details.encr_public_key`.
+> where `{registry_base_url}` is the configured registry endpoint including the GRR base path (e.g. `https://fabric.nfh.global/registry`) and `{registry_scope}` is a registry-specific segment. The signing public key is read from the returned key record. The concrete scope value and response layout are Fabric deployment details and are documented separately from this RFC.
 
 #### 3. Signing String Construction
 
@@ -407,7 +408,7 @@ A PN sending a PN-initiated callback MUST assign a unique `messageId` to each no
 | CON-004-03 | The signature algorithm MUST be `ed25519`. No other value is permitted. | MUST |
 | CON-004-04 | The body digest MUST be computed using BLAKE2b-512 and encoded as `BLAKE2b-512={Base64}`. | MUST |
 | CON-004-05 | The `keyId` field MUST use the pipe-separated format `{subscriber_id}\|{unique_key_id}\|{algorithm}`. | MUST |
-| CON-004-06 | An NP MUST resolve the signing key from the registry using the `subscriber_id` and `unique_key_id` components of the `keyId` | MUST |
+| CON-004-06 | An NP MUST resolve the signing key from the registry using the `subscriber_id` and `unique_key_id` components of the `keyId`. | MUST |
 | CON-004-07 | The `expires` timestamp MUST NOT exceed the registered expiry of the signing key. | MUST |
 | CON-004-08 | An NP receiving a Beckn request with a missing, expired, or unverifiable signature MUST return `401 NackUnauthorized`. | MUST |
 | CON-004-09 | A PN sending a solicited callback to a CN MUST use the callback signing string, appending the CN's original `signature` value as the `request-signature` field. | MUST |
@@ -451,7 +452,7 @@ The following v1.x patterns are breaking changes in v2.0:
 2. **Registry protocol change:** The v1.x Beckn Protocol-compliant registry lookup is replaced by dedi protocol-compliant lookup against `fabric.nfh.global/registry`. All registry query code MUST be updated to the dedi protocol API.
 3. **Request-signature chaining:** Solicited callbacks now carry the CN's original signature as the `request-signature` field in the signing string. v1.x callback implementations MUST add this field with `headers="(created) (expires) digest request-signature"`.
 4. **Synchronous response signing:** Every response now requires a `Signature` header using the Ack response signing string (§3.4), which includes `request-signature`. v1.x implementations that returned unsigned responses MUST add this; implementations that used a 3-line signing string for responses MUST add the `request-signature` field.
-5. **keyId format retained:** The `keyId` format is unchanged from v1.x — it remains the pipe-separated `{subscriber_id}|{unique_key_id}|{algorithm}`. No migration of the keyId string is required. What changes is the registry protocol used to resolve it (dedi lookup against `fabric.nfh.global/registry`, per item 2 above); the `subscriber_id` and `unique_key_id` components carry over directly as the lookup keys.
+5. **keyId format retained:** The `keyId` format (§2) is unchanged from v1.x. No migration of the keyId string is required. What changes is the registry protocol used to resolve it (dedi lookup against `fabric.nfh.global/registry`, per item 2 above); the `subscriber_id` and `unique_key_id` components carry over directly as the lookup keys.
 
 ### Examples
 
@@ -568,7 +569,7 @@ Content-Type: application/json
 
 ##### CN verification
 
-1. Fetch PN's public key by looking up `subscriber_id=pn.example.com` and `unique_key_id=k002` on the registry (e.g. on the current Beckn Fabric registry, `https://fabric.nfh.global/lookup/pn.example.com/subscribers.beckn.one/k002`).
+1. Fetch PN's public key by looking up `subscriber_id=pn.example.com` and `unique_key_id=k002` on the registry via its dedi lookup interface (§2.1).
 2. Reconstruct the callback signing string using the four `headers` fields in declared order.
 3. Verify PN's `signature` against the reconstructed string.
 4. Extract `request-signature` value: `Base64EncodedEd25519SignatureHere==`.
