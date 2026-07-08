@@ -133,6 +133,8 @@ All Beckn authentication MUST use the following primitives:
 
 No other signature or hash algorithm is permitted. An NP that receives a message carrying an `algorithm` value other than `ed25519` MUST reject it with a `401 NackUnauthorized`.
 
+**Note:** The required hash algorithm is BLAKE2b with a 512-bit output (BLAKE2b-512, RFC 7693). This document uses the shorthand `BLAKE-512` for the literal prefix in the `digest` field and in all wire-format examples; implementations MUST compute BLAKE2b-512.
+
 #### 2. Key Identity — the keyId Field
 
 Every Beckn HTTP Signature carries a `keyId` field that uniquely identifies the signing key. The `keyId` MUST be a single string composed of exactly three pipe-separated (`|`) components:
@@ -178,12 +180,12 @@ The signing string is a newline-delimited (`\n`) sequence of labeled values. The
 The body digest is computed as:
 
 ```
-digest = "BLAKE2b-512=" + Base64( BLAKE2b-512( UTF-8(body) ) )
+digest = "BLAKE-512=" + Base64( BLAKE2b-512( UTF-8(body) ) )
 ```
 
 - `body` is the raw UTF-8-encoded HTTP request or response body as it appears on the wire, before any transfer encoding is removed.
 - For requests with no body (e.g. GET), the digest MUST be computed over the empty byte string.
-- The prefix `BLAKE2b-512=` is a literal string prepended to the Base64-encoded hash.
+- The prefix `BLAKE-512=` is a literal string prepended to the Base64-encoded hash.
 
 ##### 3.2 Standard Signing String
 
@@ -406,7 +408,7 @@ A PN sending a PN-initiated callback MUST assign a unique `messageId` to each no
 | CON-004-01 | Every Beckn HTTP request MUST carry an `Authorization` header in Beckn HTTP Signature format. | MUST |
 | CON-004-02 | Every Beckn HTTP synchronous response MUST carry a `Signature` response header signing the response body. | MUST |
 | CON-004-03 | The signature algorithm MUST be `ed25519`. No other value is permitted. | MUST |
-| CON-004-04 | The body digest MUST be computed using BLAKE2b-512 and encoded as `BLAKE2b-512={Base64}`. | MUST |
+| CON-004-04 | The body digest MUST be computed using BLAKE2b-512 and encoded as `BLAKE-512={Base64}`. | MUST |
 | CON-004-05 | The `keyId` field MUST use the pipe-separated format `{subscriber_id}\|{unique_key_id}\|{algorithm}`. | MUST |
 | CON-004-06 | An NP MUST resolve the signing key from the registry using the `subscriber_id` and `unique_key_id` components of the `keyId`. | MUST |
 | CON-004-07 | The `expires` timestamp MUST NOT exceed the registered expiry of the signing key. | MUST |
@@ -465,8 +467,8 @@ The following v1.x patterns are breaking changes in v2.0:
 ```
 body = '{"context":{"action":"select",...},"message":{...}}'
 hash = BLAKE2b-512( UTF-8(body) )
-digest = "BLAKE2b-512=" + Base64(hash)
-       = "BLAKE2b-512=qK3Uvd39k+SHfSdG5igXsRY2Sh+nvBSNlQkLxzM7NnP4..."
+digest = "BLAKE-512=" + Base64(hash)
+       = "BLAKE-512=qK3Uvd39k+SHfSdG5igXsRY2Sh+nvBSNlQkLxzM7NnP4..."
 ```
 
 ##### Step 2 — Construct signing string
@@ -474,7 +476,7 @@ digest = "BLAKE2b-512=" + Base64(hash)
 ```
 (created): 1746518400
 (expires): 1746518700
-digest: BLAKE2b-512=qK3Uvd39k+SHfSdG5igXsRY2Sh+nvBSNlQkLxzM7NnP4...
+digest: BLAKE-512=qK3Uvd39k+SHfSdG5igXsRY2Sh+nvBSNlQkLxzM7NnP4...
 ```
 
 ##### Step 3 — Sign and assemble header
@@ -504,8 +506,8 @@ This is the raw Base64 value from the `signature="..."` field of the CN's `Autho
 
 ```
 ack_body = '{"message":{"status":"ACK","messageId":"550e8400-e29b-41d4-a716-446655440000"}}'
-digest = "BLAKE2b-512=" + Base64( BLAKE2b-512( UTF-8(ack_body) ) )
-       = "BLAKE2b-512=AckBodyDigestHere..."
+digest = "BLAKE-512=" + Base64( BLAKE2b-512( UTF-8(ack_body) ) )
+       = "BLAKE-512=AckBodyDigestHere..."
 ```
 
 ##### Step 3 — Construct Ack signing string
@@ -513,7 +515,7 @@ digest = "BLAKE2b-512=" + Base64( BLAKE2b-512( UTF-8(ack_body) ) )
 ```
 (created): 1746518401
 (expires): 1746518701
-digest: BLAKE2b-512=AckBodyDigestHere...
+digest: BLAKE-512=AckBodyDigestHere...
 request-signature: Base64EncodedEd25519SignatureHere==
 ```
 
@@ -543,8 +545,8 @@ cn_signature_value = "Base64EncodedEd25519SignatureHere=="
 
 ```
 callback_body = '{"context":{"action":"on_select","transactionId":"550e8400-e29b-41d4-a716-446655440001","messageId":"550e8400-e29b-41d4-a716-446655440000",...},"message":{...}}'
-digest = "BLAKE2b-512=" + Base64( BLAKE2b-512( UTF-8(callback_body) ) )
-       = "BLAKE2b-512=rN4Wve49l+TIfTeH6jhYtCS3Ti+owCTOmRlMyy8OoQQ5..."
+digest = "BLAKE-512=" + Base64( BLAKE2b-512( UTF-8(callback_body) ) )
+       = "BLAKE-512=rN4Wve49l+TIfTeH6jhYtCS3Ti+owCTOmRlMyy8OoQQ5..."
 ```
 
 ##### Step 3 — Construct callback signing string
@@ -552,7 +554,7 @@ digest = "BLAKE2b-512=" + Base64( BLAKE2b-512( UTF-8(callback_body) ) )
 ```
 (created): 1746518450
 (expires): 1746518750
-digest: BLAKE2b-512=rN4Wve49l+TIfTeH6jhYtCS3Ti+owCTOmRlMyy8OoQQ5...
+digest: BLAKE-512=rN4Wve49l+TIfTeH6jhYtCS3Ti+owCTOmRlMyy8OoQQ5...
 request-signature: Base64EncodedEd25519SignatureHere==
 ```
 

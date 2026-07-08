@@ -3845,12 +3845,12 @@ components:
         \ integrity of the request body.\n\nThe sending actor produces this by signing\
         \ a three-line canonical signing string with its Ed25519 private key registered\
         \ on the fabric GRR:\n\n    (created): {unix_timestamp}\n    (expires): {unix_timestamp}\n\
-        \    digest: BLAKE2b-512={base64_body_hash}\n\nThe `headers` attribute of\
+        \    digest: BLAKE-512={base64_body_hash}\n\nThe `headers` attribute of\
         \ the Authorization header MUST be `\"(created) (expires) digest\"`. The\
         \ `keyId` field identifies the signer using the pipe-separated format\
         \ `{subscriber_id}|{unique_key_id}|ed25519`. The algorithm MUST be `ed25519`.\
         \ The body digest MUST use BLAKE2b-512\
-        \ encoded as `BLAKE2b-512={Base64}`.\n\nUsed for: CN→PN requests across\
+        \ encoded as `BLAKE-512={Base64}`.\n\nUsed for: CN→PN requests across\
         \ all phases of the value-exchange lifecycle; PN→CN PN-initiated callbacks.\
         \ The receiving actor verifies it against the sender's registered public key.\
         \ Requests with an absent, expired, or unverifiable Signature MUST be rejected\
@@ -3872,7 +3872,7 @@ components:
         \ is a genuine response to a request it sent.\n\nThe PN produces this by\
         \ signing a four-line canonical signing string with its Ed25519 private key:\n\
         \n    (created): {unix_timestamp}\n    (expires): {unix_timestamp}\n    digest:\
-        \ BLAKE2b-512={base64_callback_body_hash}\n    request-signature: {cn_raw_base64_signature}\n\
+        \ BLAKE-512={base64_callback_body_hash}\n    request-signature: {cn_raw_base64_signature}\n\
         \nThe fourth line (`request-signature`) contains the raw Base64 Ed25519 signature\
         \ value extracted verbatim from the `signature=\"...\"` field of the CN's\
         \ original `Authorization` header. This binds the callback cryptographically\
@@ -3896,7 +3896,7 @@ components:
         \ that the responding NP received and authenticated the specific inbound request.\n\
         \nThe responding actor produces this by signing a four-line canonical signing\
         \ string with its Ed25519 private key:\n\n    (created): {unix_timestamp}\n\
-        \    (expires): {unix_timestamp}\n    digest: BLAKE2b-512={base64_response_body_hash}\n\
+        \    (expires): {unix_timestamp}\n    digest: BLAKE-512={base64_response_body_hash}\n\
         \    request-signature: {incoming_request_raw_base64_signature}\n\nThe fourth\
         \ line (`request-signature`) contains the raw Base64 Ed25519 signature value\
         \ extracted verbatim from the `signature=\"...\"` field of the incoming request's\
