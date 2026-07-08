@@ -354,7 +354,7 @@ Extract `keyId`, `algorithm`, `created`, `expires`, `headers`, and `signature` f
 
 ##### Step 2 — Validate timestamps
 
-Confirm that `created` is not in the future beyond the subnet-configured clock skew tolerance (default: 5 seconds) and that `expires` is not in the past.
+Confirm that `created` is not in the future beyond the subnet-configured clock skew tolerance (default: 60 seconds) and that `expires` is not in the past.
 
 ##### Step 3 — Validate algorithm
 
@@ -392,7 +392,7 @@ If all steps pass, return `200 Ack` with the CN's own `Signature` response heade
 Upon receiving a request from a CN, the PN or DS MUST perform the following verification steps. If any step fails, it MUST return `401 NackUnauthorized`.
 
 1. Parse `keyId`, `algorithm`, `created`, `expires`, `headers`, and `signature` from the `Authorization` header.
-2. Confirm `created` is not in the future beyond the subnet-configured clock skew tolerance (default: 5 seconds) and `expires` is not in the past.
+2. Confirm `created` is not in the future beyond the subnet-configured clock skew tolerance (default: 60 seconds) and `expires` is not in the past.
 3. Confirm `algorithm` is `ed25519`.
 4. Fetch the CN's public key using the key lookup procedure (§2.3).
 5. Reconstruct the standard signing string (§3.2) using the `created` and `expires` values and the BLAKE2b-512 digest of the received request body.
@@ -454,7 +454,7 @@ A PN sending a PN-initiated callback MUST assign a unique `messageId` to each no
 | CON-004-10 | The PN MUST declare `headers="(created) (expires) digest request-signature"` in its callback `Authorization` header when sending a solicited callback. | MUST |
 | CON-004-11 | The CN MUST verify the `request-signature` field in a PN solicited callback against its own previously sent signature for the same `transactionId`/`messageId`. | MUST |
 | CON-004-12 | A PN sending a PN-initiated callback MUST use the standard signing string with `headers="(created) (expires) digest"`. | MUST |
-| CON-004-13 | The `created` timestamp SHOULD NOT be more than 5 seconds in the future relative to the verifier's clock. NFOs MAY configure a different tolerance for their subnet; all NPs on that subnet MUST use the configured value. | SHOULD |
+| CON-004-13 | The `created` timestamp SHOULD NOT be more than 60 seconds in the future relative to the verifier's clock. NFOs MAY configure a different tolerance for their subnet; all NPs on that subnet MUST use the configured value. | SHOULD |
 | CON-004-14 | An NP MUST NOT trust an explicit `keyId` resolving to a registry outside `fabric.nfh.global/registry` unless that registry has been explicitly configured as trusted by the NP's operator. | SHOULD |
 | CON-004-15 | The `request-signature` value included in the callback signing string MUST be the raw Base64 `signature` attribute value from the CN's `Authorization` header, with no additional encoding or transformation. | MUST |
 | CON-004-16 | A CN MUST assign a unique `messageId` to every outbound request. | MUST |
@@ -470,7 +470,7 @@ A PN sending a PN-initiated callback MUST assign a unique `messageId` to each no
 
 #### Clock skew
 
-A tolerance of up to 5 seconds is the recommended default for the `created` field. NFOs MAY configure a stricter or more permissive value for their subnet; when they do, all NPs operating within that subnet MUST use the configured value. NPs MUST NOT accept any tolerance for `expires`; an expired signature MUST be rejected without exception regardless of subnet configuration.
+A tolerance of up to 60 seconds is the recommended default for the `created` field. NFOs MAY configure a stricter or more permissive value for their subnet; when they do, all NPs operating within that subnet MUST use the configured value. NPs MUST NOT accept any tolerance for `expires`; an expired signature MUST be rejected without exception regardless of subnet configuration.
 
 #### Key rotation
 
