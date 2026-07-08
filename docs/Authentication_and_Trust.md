@@ -219,7 +219,7 @@ The signing string is a newline-delimited (`\n`) sequence of labeled values. The
 The body digest is computed as:
 
 ```
-digest = "BLAKE-512=" + Base64( BLAKE-512( UTF-8(body) ) )
+digest = "BLAKE-512=" + Base64( BLAKE2b-512( UTF-8(body) ) )
 ```
 
 - `body` is the raw UTF-8-encoded HTTP request or response body as it appears on the wire, before any transfer encoding is removed.
@@ -510,7 +510,7 @@ The following v1.x patterns are breaking changes in v2.0:
 
 ```
 body = '{"context":{"action":"select",...},"message":{...}}'
-hash = BLAKE-512( UTF-8(body) )
+hash = BLAKE2b-512( UTF-8(body) )
 digest = "BLAKE-512=" + Base64(hash)
        = "BLAKE-512=qK3Uvd39k+SHfSdG5igXsRY2Sh+nvBSNlQkLxzM7NnP4..."
 ```
@@ -550,7 +550,7 @@ This is the raw Base64 value from the `signature="..."` field of the CN's `Autho
 
 ```
 ack_body = '{"message":{"status":"ACK","messageId":"550e8400-e29b-41d4-a716-446655440000"}}'
-digest = "BLAKE-512=" + Base64( BLAKE-512( UTF-8(ack_body) ) )
+digest = "BLAKE-512=" + Base64( BLAKE2b-512( UTF-8(ack_body) ) )
        = "BLAKE-512=AckBodyDigestHere..."
 ```
 
@@ -589,7 +589,7 @@ cn_signature_value = "Base64EncodedEd25519SignatureHere=="
 
 ```
 callback_body = '{"context":{"action":"on_select","transactionId":"550e8400-e29b-41d4-a716-446655440001","messageId":"550e8400-e29b-41d4-a716-446655440000",...},"message":{...}}'
-digest = "BLAKE-512=" + Base64( BLAKE-512( UTF-8(callback_body) ) )
+digest = "BLAKE-512=" + Base64( BLAKE2b-512( UTF-8(callback_body) ) )
        = "BLAKE-512=rN4Wve49l+TIfTeH6jhYtCS3Ti+owCTOmRlMyy8OoQQ5..."
 ```
 
